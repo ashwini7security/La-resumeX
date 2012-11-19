@@ -1,0 +1,13 @@
+#refer: http://dev.mysql.com/doc/refman/5.0/en/charset-database.html and relatd chapters on right hand side
+
+#first change ofr the database
+alter database laresumex collate utf8_bin character set utf8;
+#then for the table
+ALTER TABLE `student_info_student` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin
+#then for the columns
+ALTER TABLE `student_info_student` CHANGE `career_objective` `career_objective` LONGTEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL 
+
+#then use smart_unicode while storing
+#actually! Don't! :)
+
+

@@ -1,0 +1,112 @@
+ {% extends 'base.html' %}
+{% block title %}
+    SEARCH
+{% endblock %}
+{% block content %}
+<html>
+<script language='javascript'>
+    function createText(o, what,name, fieldType)
+    {
+        //alert(o.checked)
+        p=o.parentNode.parentNode;
+        a=o.parentNode;
+        if (o.checked==true)
+        {
+            //alert(a.nextSibling)
+            if (a.nextSibling == null)
+            {
+                text=document.createTextNode(what)
+                if (fieldType=="text")
+                {
+                    input=document.createElement("input");
+
+                    input.type='text'
+                    input.name=name;
+                    p.appendChild(text)
+                    p.appendChild(input)
+
+                }
+ //               p.appendChild(fieldType)
+                else
+                {
+                    input=document.createElement(fieldType);
+                    input.name=name;
+
+                      p.appendChild(text)
+                p.appendChild(input)
+
+                for(var i=0;i<10;i++)
+                {
+                    option=document.createElement("option")
+                    option.text=i;
+                    input.add(option,null)
+                }
+                }
+                          }
+
+        }
+        else
+        {
+           if (a.nextSibling != null)
+           {
+            p.removeChild(a.nextSibling.nextSibling)
+            p.removeChild(a.nextSibling)
+
+            //p.removeChild(c)
+           } 
+        }
+    }
+function aggr(o)
+{
+    createText(o,'X');
+    createText(o,'XI');
+    createText(o,"graduation")
+}
+function postData()
+{
+    alert("FDS");
+return true;
+}
+</script>
+<hr>
+SEARCH CRITERIA 
+<hr>
+<br>
+ <div id = 'content'>
+ <form method="post" action="/company/getResume">
+ {% csrf_token %}
+  <table>
+        <tr>
+            <td>Workex   <td>Yes<input type= 'checkbox' id='workex' onChange="createText(this,'how many years','workex_l_count','select');"> 
+        </tr>
+        <tr>
+            <td> Allow Backlogs   <td>Yes<input type= 'checkbox' name="backlogs" id='backlogs'> </td>
+        </tr>
+        <tr>
+            <td>Spoken Languages <td>Yes<input type= 'checkbox'  id='languages' onChange="createText(this,' minimum how many languages','personal_languages_count','select');"> 
+        </tr>
+        <tr>
+            <td>Programming Languages <td>Any Specific language<input type= 'checkbox'  id='languages' onChange="createText(this,' add languages','swExposure_programming_text','text');"> 
+         </tr><tr><td></td>           <td>Number of languages<input type= 'checkbox'  id='languages' onChange="createText(this,' minimum how many languages','swExposure_programming_count','select');"> 
+        </tr>
+        <tr>
+            <td>Min Age <td>Yes<input type= 'checkbox' id='languages' onChange="createText(this,' Minimu age requred','student_birthdate_text','select');"> 
+        </tr>
+        <tr>
+            <td>Minimum Aggregrate <td>Graduation<input type= 'checkbox'   id='grad_marks' onChange="createText(this,'Marks','marks_graduation_text','text');">
+        </tr>
+        <tr>
+            <td></td> <td>XII<input type= 'checkbox' id='XII_marks' onChange="createText(this,'Marks',"marks_XII_text",'text');">
+        </tr>
+        <tr>
+            <td><td>X<input type= 'checkbox'  id='X_marks' onChange="createText(this,'Marks',"marks_X_text",'text');">
+        </tr>
+        <tr>
+            <td>Offered City<td><input type= 'checkbox'  id='city' onChange="createText(this,'City Name','personal_city_text','text');">
+        </tr>
+     </table>    
+ </div>
+ <input type='submit' value="search Resumes">
+</html>
+{% endblock %}
+

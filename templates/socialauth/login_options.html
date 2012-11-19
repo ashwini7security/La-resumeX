@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+    Login
+{% endblock %}
+{% block content %}
+<head>
+<link type="text/css" href="{{MEDIA_URL}}/jquery/css/humanity/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>
+
+<script language='javascript'>
+$(function(){
+     $("#social_login").dialog({
+            modal:true,
+            autoOpen:false,
+        });
+})
+
+function loginOptions()
+{
+    $(function()
+    {
+        $('#social_login').dialog("open");
+    })
+} 
+</script>
+</head>
+<body>
+<div id='social_login' title='Login safely'>
+    <a href='/login/facebook?next={{ next }}'>Login using FaceBook</a><br/> 
+    <a href='/login/google-oauth2?next={{ next }}'>Login using Gmail</a><br/> 
+</div>
+
+<input type='button' onclick="loginOptions()" value='Submit a jobpsting'>
+
+{% comment %} 
+<a href='/login/twitter?next={{ next }}'>Login using Twitter</a> <br/> 
+<a href='/login/linkedin?next={{ next }}'>Login using LinkedIn (in your dreams :P)</a> <b/>
+
+<div id='sicsr_login'>
+    <a href='/login/ldap_login?next={{ next }}'>Login using your SICSR account</a>
+</div>
+
+{% endcomment %}
+
+{% endblock %}

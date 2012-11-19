@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}
+ home
+{% endblock %}
+{% block content %}
+<html>
+
+<input type = 'button' value = 'Reports' onclick="javascript:location.href='{{ROOT}}/PT/reports'"><br>
+<input type = 'button' value = 'search for students' onclick='javascript:alert("Coming soon...")'><br>
+<input type = 'button' value = 'fetch students applied for a company' onclick="javascript:location.href='{{ROOT}}/PT/fetch'"><br>
+<input type = 'button' value = 'back' onclick ='history.go(-1)'><br>
+<input type = 'button' value = 'Logout' onclick="javascript:location.href='{{ROOT}}/ldap_login/logout'"><br>
+
+<a href = 'http://projects.sdrclabs.in/laresumex/admin' target = '_blank'> Go to the Admin site </a>
+
+
+
+
+
+
+
+
+
+
+
+</html>
+{% endblock %}
+

@@ -1,0 +1,40 @@
+{% extends 'base.html'%}
+{% block scripts %}
+<script language = 'javascript'>
+function next(o)
+{
+    c = o.nextElementSibling;
+    
+    if (o.value == 'placed')
+    {
+           c.children[0].removeAttribute('disabled');
+    }
+    else
+    {
+        c.children[0].setAttribute('disabled','true');
+    }
+}
+</script>
+{%endblock%}
+{%block title%}
+    Reports
+{% endblock %}
+
+{% block content %}
+
+<form action = '{{ROOT}}/PT/reports' method = 'post'>
+{% csrf_token %}
+<select name = 'what' onchange = 'next(this)'>
+<option value = 'placed'> Placed Students</option>
+<option value = 'unplaced'> Unplaced Students</option>
+</select>
+
+filter by
+<select name = 'filter'>
+<option> company
+<option value = 'group'> Batch
+</select>
+<BR>
+<input type = 'submit' value= 'Go'>
+</form>
+{%endblock%}

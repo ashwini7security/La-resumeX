@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% block title %}
+    postings
+{% endblock %}
+{% block content %}
+<html>
+<head>
+<style type="text/css">
+
+.posting{
+    float: left;
+    clear: none;
+    display: block;
+    list-style-position: outside;
+    top: 3px;
+    word-wrap: normal;
+   
+    
+    text-overflow: ellipsis;
+    margin-left: 6%;
+    width:25%;
+    /*border:2px dotted;*/
+    padding:3%;
+    /*background-color:#ffef79;*/
+    background-image : url('{{MEDIA_URL}}/post-it-pin.png');
+    background-repeat:no-repeat;
+    background-position:top center;
+    z-index:4;
+    background-color:#fae977;
+    -moz-border-radius: 3em 1em;
+    -moz-box-shadow:-3px 5px #afafaf;
+/*http://www.the-art-of-web.com/css/border-radius/
+http://css-tricks.com/snippets/css/css-box-shadow/
+*/
+
+}
+/*@bgimg{
+    background-image:abc;
+    width:100%
+    height:100%
+    position:top center;
+}*/
+.posting b{
+   font-family:Trebuchet MS;
+   font-size:large;
+   font-variant:small-caps;
+   text-decoration:underline;
+   float:left;
+}
+.hidden{
+    display:none;
+
+}
+#a{
+	top: 45%;
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-image: url('{{MEDIA_URL}}/post-it-pin-small.png');
+	right: 2%;
+	float: right;
+	display: block;
+	background-color: #fdfd8c;
+	position: fixed;
+}
+
+</style>
+<script>
+function toggle(o,j)
+{
+   input = document.getElementById("input_"+j)
+   var exists = 1
+   if (!input)
+   {    
+        exists = 0
+        input= document.createElement('input');
+        input.setAttribute('type','hidden');
+        input.id = "input_"+j;
+    }
+    image = document.createElement('img')
+    image.src="{{MEDIA_URL}}/Green_tick.png";
+    image.height=30
+    image.width=40
+    image.id = "img_"+j
+   switch(o.value)
+    {
+        case "I am interested in this.":
+        {   o.value  = 'Not interested'
+            input.name = "interested";
+            o.name = 'interested';
+            input.value = j;
+            o.parentNode.appendChild(image)
+            if (o.name == o.getAttribute('default'))
+            {
+                if(exists == 1)
+                    input.parentNode.removeChild(input);
+                break;
+               
+            }
+            else           o.parentNode.appendChild(input);
+
+            break;
+        }
+        case "Not interested" :
+        {
+             
+            o.value = "I am interested in this."
+            input.name = "not interested"
+            o.name = 'not interested'
+            
+            input.value=j;
+            d=document.getElementById('img_'+j);
+            o.parentNode.removeChild(d);
+            if (o.name == o.getAttribute('default'))
+            
+            {
+                if(exists)
+                    input.parentNode.removeChild(input);
+                break;
+            }
+            else o.parentNode.appendChild(input);
+
+            break;
+        }
+        case "Un - Hide":
+        {
+            input.name = "un-hidden";
+            input.setAttribute('exists',exists);
+            input.value = j;
+            d = document.getElementById('div_'+j)
+            d.setAttribute('class','posting');
+            p=document.getElementById('p_'+j);
+            p.setAttribute('class','hidden');
+            o.parentNode.appendChild(input);
+            break;
+                    
+        }
+        case "Hide":
+        {
+            input.name = "hidden";
+
+            input.setAttribute('exists',exists);
+            input.value = j;
+            d = document.getElementById('div_'+j)
+            d.setAttribute('class','posting');
+            p=document.getElementById('p_'+j);
+            p.setAttribute('class','hidden');
+            o.parentNode.appendChild(input);
+            break;
+                    
+        }
+        case "Approve":
+        {
+            o.parentNode.appendChild(image);
+            o.type = 'hidden'
+            o.name = 'approved'
+            o.value = j;
+            break;
+        
+        }
+        case "Reject":
+        {
+            d = document.getElementById('img_'+j);
+            if (d) o.parentNode.removeChild(d);
+            o.type = 'hidden';
+            o.name = 'disapprove'
+            o.value = j;
+            break;
+        }
+            
+    }
+}
+function a(o,j)
+{
+    p  = document.getElementById('p_'+j);
+    d  = document.getElementById('div_'+j);
+    e = document.getElementById('input_'+j);
+    i = document.getElementById('interest_'+j);
+    if (e.name == 'hidden' || e.name == 'un-hidden')
+    {
+
+        if ((i.getAttribute('default') == i.getAttribute('name')) || (e.getAttribute('exists') == '0'))    
+               e.parentNode.removeChild(e)
+    
+        else e.name = i.name;
+    }
+       
+    p.setAttribute('class','posting')
+    d.setAttribute('class','hidden');
+}
+
+</script>
+</head>
+<body>
+{% if message == 'DO' %}
+<H3> Your changes have been recorded </h3>
+{% endif %}
+{% if hidden_job %}
+
+
+    <form action = '{{ROOT}}/jobposting/hidden/do' method = 'post'>
+{%else %}
+    <form action = '{{ROOT}}/jobposting/views/do' method = 'post'>
+{% endif %}
+
+
+
+{% csrf_token %}
+
+<!-- HIDDEN JOBS ....-->
+
+{% if h %}
+
+{% for j in hidden_job %}
+<p class = "posting" name = 'hidden' id = 'p_{{ j.id }}'  >
+<b> {{ j.post.company_name  }}</b><br> <a href = "{{ j.post.company_url }}">{{ j.post.company_url }}</a><br><BR>
+ {{ j.post.description }}<br><BR>
+ <b>Apply   : </b>
+ {{ j.post.how_to_apply }}<BR><BR>
+<BR><BR>
+{% if role == 'admin' %}
+    <input type = 'button' value = 'Approve' onclick = 'toggle(this, "{{j.id}}")'>
+    <input type = 'button' value = 'Reject' onclick = 'toggle(this,"{{j.id}}")'>
+{% else %}
+    <input type = 'button' value = 'Un - Hide' onclick = "toggle(this, '{{j.id}}')">
+{% endif %}
+<div class = 'hidden' id = 'div_{{j.id}}'>
+
+    <input type = 'button' value = 'Keep {{j.post.company_name}} hidden' onclick = "a(this, '{{j.id}}')">
+</div>
+</p>
+<BR><BR>
+{% empty %}
+<i> No hidden jobs </i>
+{% endfor %}
+
+<!--  defult un personalized jobs ..!!!  -->
+{% else %}
+{% if empty %}
+<i> No job postings </i>
+{% else %}
+{% for j in default_job %}
+<p class = "posting" name = 'new' id = 'p_{{ j.id }}'  >
+{% if role == 'admin' %}
+{% if last_login < j.posted_on %}
+ <img src = '{{MEDIA_URL}}/new.gif' height= 50 width =50 align = 'left'>
+ {% endif %}
+ {% else %}
+{% if last_login < j.approved_on %}
+ <img src = '{{MEDIA_URL}}/new.gif' height= 50 width =50 align = 'left'>
+ {% endif %}
+ {% endif %}
+
+ <b> {{ j.company_name  }}</b><br> <a href = "{{ j.company_url }}">{{ j.company_url }}</a><br><BR>
+ {{ j.description }}<br><BR>
+ <b>Apply   : </b>
+ {{ j.how_to_apply }}<BR><BR>
+<BR><BR>
+{% if role == 'admin' %}
+    <input type = 'button' value = 'Approve' onclick = 'toggle(this, "{{j.id}}")'>
+    <input type = 'button' value = 'Reject' onclick = 'toggle(this,"{{j.id}}")'>
+{% else %}
+    <input type = 'button' id = 'interest_{{j.id}}' default = 'not interested' value = 'I am interested in this.' onclick = 'toggle(this, "{{j.id}}")'>
+    <input type = 'button' value = 'Hide' onclick = "toggle(this, '{{j.id}}')">
+{% endif %}
+<div class = 'hidden' id = 'div_{{j.id}}'>
+
+    <input type = 'button' value = 'Show {{j.company_name}}' onclick = "a(this, '{{j.id}}')">
+</div>
+</p>
+<BR><BR>
+{% endfor %}
+
+
+<!--   personalized jobs ..!!!  -->
+
+<div id = 'existing'>
+{% for j in personalized_job %}
+<p class = "posting" name ='existing' id = 'p_{{ j.post.id }}' style="{float:left}" >
+ <b> {{ j.post.company_name  }}</b><br>
+  <a href = "{{ j.post.company_url }}">{{ j.post.company_url }}</a><BR><BR>
+ {{ j.post.description }}<br><BR>
+ <b>Apply : </b>
+ {{ j.post.how_to_apply }}<BR><BR>
+<BR><BR>
+    {% if j.is_interested %}
+    <img src = "{{MEDIA_URL}}/Green_tick.png" height=30 width = 40 id = "img_{{j.post.id}}">
+    <input type = 'button'  id = 'interest_{{j.post.id}}'  default = 'interested' value = 'Not interested' onclick = 'toggle(this, "{{j.post.id}}")'>
+    {% else %}
+    <input type = 'button' id = 'interest_{{j.post.id}}'  default = 'not interested' value = 'I am interested in this.' onclick = 'toggle(this, "{{j.post.id}}")'>
+    {% endif %}
+    <input type = 'button' value = 'Hide' onclick = "toggle(this, '{{j.post.id}}')">
+<div class = 'hidden' id = 'div_{{j.post.id}}'>
+
+    <input type = 'button' value = 'Show {{j.post.company_name}}' onclick = "a(this, '{{j.post.id}}')">
+</div>
+
+</p>
+<BR><BR>
+{% endfor %}
+{% endif %}
+</div>
+{% endif %}
+
+<div id = 'a'>
+<BR><BR>
+<input type = 'button' value = 'back' onclick = 'history.go(-1)'>
+{% if not empty %}
+<input type = 'submit' value = 'Submit changes'>
+{% endif %}
+<input type = 'button' value = 'Home' onclick = 'javascript:location.href="{{ROOT}}/home"'>
+</div>
+</form>
+</html>
+{% endblock %}

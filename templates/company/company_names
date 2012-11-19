@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}
+    List of companies
+{% endblock %}
+{% block content %}
+
+<html>
+<link type="text/css" href="{{MEDIA_URL}}/jquery/css/humanity/jquery-ui-1.8.14.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-ui-1.8.14.custom.min.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}/functions.js"></script>
+        <script language="javascript">
+        	$(function(){
+
+				// Accordion
+				$("#accordion").accordion({
+                    header: "h3",
+                    autoHieght: false,
+                    navigation: true
+                    });							
+			});
+            
+
+function selected(o)
+{
+    if (o.checked == true)
+    {
+        o.name=o.id
+    }
+    else if(o.checked == false)
+    {
+        o.removeAttribute('name')
+    }
+}
+
+function checkThree()
+{
+    input=document.getElementsByTagName('input')
+    count=0;
+    for(var i=0;i<input.length;i++)
+    {
+        if(input[i].type=='checkbox' && input[i].checked==true)
+            {
+            count++
+            selected(input[i])
+            }
+         
+         if(input[i].disabled)
+             {
+                 input[i].disabled=false
+                 //alert(input[i].id)
+             }
+    }
+    //alert(count)
+    if (count>3) 
+    {
+        alert('You can only apply for 3 companies')
+        return false;
+    }
+    return true;
+}
+function a(o)
+{
+    alert(o.value);
+}
+</script>
+Following is the list of companies visiting our college. 
+<br><BR>
+<ul>
+<form onsubmit='return checkThree();' method="post" action="{{ROOT}}/company/apply">
+{% csrf_token %}
+{% for k in companies %}
+    <li>
+        <span class='company'> 
+        <a class = 'tooltip' href ='#'>{{ k.name }}<span class='tooltip'> <em>{{k.name}}</em>{{ k.info }}</span></a>
+        <input type='checkbox' title="{{k.name }}" id="{{ k.name }}" onclick="selected(this);" {{ k.gone }} {{k.Checked}}>
+        {% if k.gone == "" %}
+        <pre>   The process starts from <b> {{k.process}} </b>... So please apply before <b>{{ k.date_of_applying }}</b> </pre>
+        {% else %}
+        <pre>   Company is already gone! </pre>
+        {% endif %}
+       
+       </company>
+    </li>
+{% empty %}
+    <i> no companies </i>
+{% endfor %}
+</ul>
+<input type='submit' value="Submit">
+<input type='button' value='Home' onclick="javascript:location.href='{{ROOT}}/home/'">
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+ Done
+{% endblock %}
+
+{% block content %}
+
+{{ msg }}
+<br><BR>
+<input type = 'button' onclick='javascript:location.href="{{ROOT}}/home/"' value='Home'>
+<br><br>
+{% endblock%}

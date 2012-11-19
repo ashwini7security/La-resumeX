@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{bib:doe.00.conf1}
+John Doe.
+\newblock A first conference paper.
+\newblock In {\em The first conference proceedings}, pages 200--210, 2000.
+
+\bibitem{bib:doe.01.journal1}
+John Doe.
+\newblock A first journal paper.
+\newblock {\em The first journal}, pages 50--60, 2001.
+
+\bibitem{bib:doe.10.conf2}
+John Doe.
+\newblock A second conference paper.
+\newblock In {\em The second conference proceedings}, pages 100--110, 2010.
+
+\bibitem{bib:doe.11.journal2}
+John Doe.
+\newblock A second journal paper.
+\newblock {\em The second journal}, pages 40--50, 2011.
+
+\end{thebibliography}

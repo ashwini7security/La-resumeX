@@ -1,0 +1,9 @@
+resume_format should be a SYMBOLIC LINK towards the DIRECTORY of resume format that we wanna use.
+THAT DIRECTORY should contain a file called template.tex which is what is actually used by us.
+
+WHATEVER dirctory we choose, should be also copied under /home/USER/texmf/tex directory -- to make it searchable. Copy the directory. Don't DIRECTLY copy the tex files inside it.
+
+Needless to say, this thing to fully work requires the whole LaTeX (tetex packages) along with etoolbox and modernl packages in ubuntu. Don't know about others.
+
+Symbolic links do NOT get preserved inside HG repositories
+

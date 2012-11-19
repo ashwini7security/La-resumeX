@@ -1,0 +1,178 @@
+<html>
+    <head>
+    <meta names = 'keywords' language = 'en-US' content = 'placements, SICSR ,companies, jobs, SDRC, Apoorva, Samar, Laresumex'>
+    <!-- keywords that take one one week to get un indexed. -->
+
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>La-ResumeX ::{% block title %}{% endblock %}</title>
+    {% comment %}
+    next meta tag for magic of Google Webmaster 
+{% endcomment %}
+    <meta name="google-site-verification" content="_eq5ilPot78HSQvDUYIlO4L3Vi2zBGhPhzBQHTfzmPE" />
+
+
+    <style type="text/css">
+        
+        /* code inspiration for tooltip:- http://sixrevisions.com/css/css-only-tooltips/*/
+        .tooltip{   
+            color: Black;
+            outline:none;
+            cursor: alias;
+            text-decoration: none;
+            position: relative;
+         }
+        .tooltip span{
+            margin-left: -999px;
+            padding:0.8 1em;
+            position:absolute;
+         }
+        .tooltip:hover span{
+            font-family:comic sans;
+            position:absolute;
+            top: 2em;
+            z-index: 99;
+            margin-left:-10px; 
+            width:250px;
+            box-shadow:5px 5px 5px rgba(0,0,0.1);
+            background-color:#fbd7b9;
+         }
+
+        .tooltip:hover em{
+            font-family:Tahoma;
+            font-size:0.7em;
+            font-weight:bold;
+            display:block;
+            padding:0.2em 0 0.6em 0;
+        }
+
+        * html a:hover {background:transparent;}
+
+        /* For Jquery tab headings. */
+        .sectionlinks
+        {
+            font:"62.5% 'Trebuchet MS',sans-serif";
+        }
+        
+        
+        li {
+	        background-repeat: repeat;
+	        list-style-position: outside;
+	        list-style-type: square;
+	        margin: 11px;
+        }
+        /* hr in header ior footter..*/
+        hr {
+	        line-height: 6px;
+	        text-shadow: 4px 8px #ca651e;
+	        color: #56c72b;
+            }
+
+        #photo {
+            border: 1px dotted black;
+            margin: 10px;
+            position: inherit;
+            height:150px;
+            width:180px;
+          }
+
+        .company
+            {
+             font:"92.42% 'Arial',sans-serif";
+            }
+
+        #footer_from_sadhan
+        {
+            clear: both;
+            background-color: #BA99BC;
+            float:center;
+            text-align:center;
+            font-family: 'Trebuchet MS', sans-serif;
+            font-size: 10pt;
+        }
+
+        body
+        {
+            margin-top:0px;
+            padding-top:0px;
+        }
+
+        contact
+        {
+	        font-family:Verdana;
+            font-size:2em;
+        }
+
+    </style>
+    {% comment %} 
+        for insertings syles 
+    {% endcomment %}
+    {% block styles %}
+    {% endblock %}
+
+    {% block scripts %}
+    {% endblock %}
+    
+{% comment %}
+ for google analytics tracking.
+{% endcomment %}
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-26005401-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ })();
+
+</script>
+
+</head>
+
+
+<body>
+<div id ='sid' ><!--Samar is Dog -->
+    <h1 align="center" style="{color: purple}">LaResume-X</h1> 
+    <h3 align="center">More than just Resume in <img src="http://projects.sdrclabs.in/laresumex_media/nayiwalifile.png" width=50 height=25></h3>
+    <hr size=10 color='#56C72B'>
+</div>
+
+<div id = 'content'>
+    {% block content %}
+    {% endblock %}
+</div><!-- /endblock content-->
+
+
+<div id ='footer'>
+    <hr>
+
+    <br>
+    <div style ="{float:right;text-align:right;}">
+    
+      This software is a creation of 
+      {% if "1234567894375804397501834651034875601348564138905638"|random|divisibleby:2 %}
+         <a href="http://www.facebook.com/knightsamar" target='_blank'>Samarendra</a> and <a href="http://www.facebook.com/apoorva.srinivasan1" target='_blank'>Apoorva Srinivasan</a> 
+      {% else %}
+         <a href="http://www.facebook.com/apoorva.srinivasan1">Apoorva Srinivasan</a> and <a href = "http://www.facebook.com/knightsamar">Samarendra</a> 
+      {% endif %}
+        from MSc(CA)-<a target -'_blank' href ='http://www.facebook.com/#!/groups/120738487947478/'>Illuminix</a>
+
+      <br/>
+      <BR>
+      This is a <a href='http://sdrclabs.in'><img src="http://projects.sdrclabs.in/laresumex_media/SDRC_logo.gif" height="30" width="60" border=0 alt="SDRCLabs"></a>Labs creation!<br/>
+    <a href='http://redwine.sdrclabs.in/projects/sdrc-laresumex/repository'>Version 0.40-Hammer</a>
+    </div>
+
+    <div name = "Samar_is_a_super_idiot" style = "{float:left}">
+        Developed using <a href='http://www.djangoproject.com'><img src='http://projects.sdrclabs.in/laresumex_media/django-logo-positive.png' height='20' width='70' alt='Django' border=0></a>
+        <BR>and generates Resumes using <a href='http://www.latex-project.org/'><img src='http://projects.sdrclabs.in/laresumex_media/nayiwalifile.png' border=0 height=23 width=50 alt='Project LaTeX'></a>
+    </div>
+
+    <br>
+    <br><BR><BR><BR><BR>
+    <div id='footer_from_sadhan' align='center'>Works best in <a href='http://getfirefox.com'>Firefox!</a></span></div>
+    <contact><a href = '/laresumex/contact/'>Contact US</a></contact>
+</div><!-- /footer-->
+</body>
+</html>

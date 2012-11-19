@@ -1,0 +1,171 @@
+{% load some_tags %}
+\documentclass{article}
+\usepackage[pdftex]{graphicx}
+
+\begin{document}
+    \includegraphics[scale=0.23]{ {{photo}} } 
+    \HUGE{ {{s.fullname}} } \\
+    
+    \textit{ Phone: } {{s.phone_number}}\\
+    \textbf{ EMAIL: } {{s.email}}\\
+    {% if s.sex == 'm' %}
+      Male, \nolinebreak
+    {% else %}
+      Female, \nolinebreak
+    {% endif %}
+    {{ p.birthdate }}\\
+\hline
+    \\
+  
+    \section*{Career Objective}
+\hline
+\hline
+\\
+\\    
+    \textit{ {{s.career_objective}} }
+    \\
+    
+    \section*{Personality Traits}
+    \hline
+    \hline
+      \begin{itemize}
+<D-c>	{% for per in p.strength|split:',' %}       
+	  \item { {{per}} }
+	{% endfor %}
+      \end{itemize}
+
+  {% if  m %}
+ \section*{Academic Qualification}
+  \hline
+  \hline
+      \begin{tabular}{llll}
+  
+       Class & Board/University &  Percentage & Year&\\
+      {% for marks in m %}
+	  {{ marks.course }} & {{ marks.uni }} & {{ marks.marks }} & {{ marks.fromDate|date:'Y' }}&\\
+      {% endfor %}
+      \end{tabular}
+ {% endif %}
+
+ {% if c %}
+
+  \section*{Certification}
+    \hline
+    \hline
+    \\
+    \\
+     \hspace{4} \begin{tabular}{lll}
+	\begin{itemize}
+
+	    {% for certi  in c %}
+		\item {{ certi.desc }} & {{ certi.fromDate|date:'M   Y' }} &\\
+	    {% endfor %}
+	 \end{itemize}	  
+      \end{tabular}
+ {% endif %}
+
+\section*{Software Exposure}
+  \hline
+  \hline	
+   \\
+
+  \begin{tabular}{lll}
+
+      {% if sw.programming %} 
+	\textbf{Programming Languages} &	: & {{ sw.programming }}&\\
+      {% endif %}
+      {% if sw.databases %}
+	\textbf{Databases}}& :  &{{ sw.databases }}&\\
+      {% endif %}
+      {% if sw.OS %}
+	\textbf{Operating Systems}&	: &{{ sw.OS }}&\\
+      {% endif %}
+      {% if sw.webTools %}
+	\textbf{Web Based Tools}&	: &{{ sw.webTools }}&\\
+      {% endif %}
+	\end{tabular}
+      {% if pro %}
+ 
+ \section*{ Projects Undertaken}
+  \hline
+  \hline
+  \\
+      \begin{tabular}{lll}
+	\begin{itemize}
+	    {% for pr  in pro %}
+		\item {{ pr.heading }} : {{pr.desc}}&{{ pr.fromDate|date:'M   Y' }} &{{pr.endDate|date:'M Y' }}\\
+	    {% endfor %}
+	  \end{itemize}
+      \end{tabular}
+ {% endif %}
+
+
+ {% if w %}
+ \section*{ Work experience }
+\hline
+\hline
+\\
+      \begin{tabular}{lll}
+	\begin{itemize}
+	  {% for wex  in w %}
+	      \item {{wex.desc}}&{{ wex.fromDate|date:'M   Y' }} &{{ wex.endDate|date:'M Y' }}\\
+	  {% endfor %}
+        \end{itemize}               
+      \end{tabular}
+ {% endif %}
+
+
+ {% if a %}
+ \section*{ Academic Acheivements }
+\hline
+\hline
+\\
+      \begin{tabular}{lll}
+	\begin{itemize}
+	  {% for ac  in a %}
+	      \item {{ac.desc}}&{{ ac.fromDate|date:'M   Y' }} &{{ac.endDate|date:'M Y' }}\\
+	  {% endfor %}
+        \end{itemize}               
+      \end{tabular}
+ {% endif %}
+
+
+{% if e %}
+ \section*{ Extra Curricular Activities }
+\hline
+\hline
+      \begin{tabular}{lll}
+	\begin{itemize}
+	  {% for ex  in e %}
+	      \item {{ex.desc}}&{{ ex.fromDate|date:'M   Y' }} &{{ ex.endDate|date:'M Y' }}\\
+	  {% endfor %}
+        \end{itemize}               
+      \end{tabular}
+ {% endif %}
+
+  \section*{Personal Dossier}	
+  \hline
+  \hline
+  \\
+  \begin{tabular}{lll}
+  
+    \textbf{Birthdate}	&: & {{ p.birthdate }}&\\
+    \textbf{Mother's Name}	&: &{{ p.mother_name }}&\\
+    \textbf{Father's Name}	&: & {{ p.father_name }}&\\
+    \textbf{Mother's Occupation}&:&{{ p.mother_occupation }}&\\
+    \textbf{Languages Known}	&:& {{ p.languages }}&\\
+    \textbf{Permanent Address}	&: &{{ p.perr_add }}&\\
+    \textbf{Address of Corrospondance}&	: &{{ p.corr_add }}&\\
+  \end{tabular}
+  
+{% if p.hobbies %}
+\section*{hobbies}
+\begin{itemize}
+{% for h in p.hobbies|split:',' %}
+  \item {{ h }}
+{% endfor %}
+{% endif %}
+
+\hline
+\end{document}
+

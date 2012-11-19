@@ -1,0 +1,905 @@
+{% extends 'base.html' %}
+<!-- Form for the resume -->
+{% load some_tags %}
+{% block title %}
+    Your Details
+{% endblock %}
+
+{% block styles %}
+<style type='text/css'>
+    .invalid_data
+    {
+        border-color: red;
+        border-width: 1.5px;
+        border-style: dashed;
+        padding: 1px;
+    }
+</style>
+
+<link type="text/css" href="{{MEDIA_URL}}/jquery/css/humanity/jquery-ui-1.8.14.custom.css" rel="stylesheet" />	
+<style type="text/css">
+    body{ font: 80% "Verdana", sans-serif; margin: 50px;}
+    .demoHeaders { margin-top: 2em; }
+    #dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+    #dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+    ul#icons {margin: 0; padding: 0;}
+    ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+    ul#icons span.ui-icon {float: left; margin: 0 4px;}
+</style>	
+{% endblock %}
+
+{% block scripts %}
+		<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="{{MEDIA_URL}}/jquery/js/jquery-ui-1.8.14.custom.min.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}/abd.js"></script>
+		<script type="text/javascript">
+			$(function(){
+
+				// Accordion
+				$("#accordion").accordion({
+                    header: "h3",
+                    autoHieght: false,
+                    navigation: true
+                    });
+	
+				// Tabs
+				$('#tabs').tabs();
+
+				// Datepicker
+				$('#datepicker').datepicker({
+					inline: true
+				});
+				
+				//hover states on the static widgets
+				$('#dialog_link, ul#icons li').hover(
+					function() { $(this).addClass('ui-state-hover'); }, 
+					function() { $(this).removeClass('ui-state-hover'); }
+				);
+				
+			});
+            
+/* provides the addAnother functionality -- allows to add another instance of an element by duplicating it _properly_ */
+function addNew(elName,val)
+{
+        // set the form flag which is used to set whether the remove button is to be rendered or not.
+        if(val == '[]' ) formflag = true
+        else if (!val) formflag = true
+        else formflag= false
+       
+        c=document.getElementById(elName);
+        debug(c.id + c.tagName)
+        if (formflag)
+        {
+            removeButton=document.createElement('input')
+            removeButton.type='button';
+            removeButton.value="remove";
+        }
+         {% if flag == 'form' %}
+                 formflag=true;
+        
+         {% endif %}   
+        
+        // If its a table (other fields or marks )
+        if (c.tagName=='TR' || c.tagName == 'tr')
+            {
+                noOfTR=c.parentNode.children.length; // number of TR's . = parentNode.childElementCount
+                              
+                if ((c.id.indexOf('marks')>-1) && (formflag))
+                    firstNode=c.parentNode.children[3]; // alteast 3 are compulsory.  and clone the third one. 
+                else  
+                    firstNode=c.parentNode.children[1] // if other fields. then clone the first one 
+                
+                lastNode=c.parentNode.children[noOfTR-1]
+                clone=firstNode.cloneNode(true); 
+                
+                l=lastNode.getElementsByTagName('select');
+                if (l.length ==0 ) 
+                    l = lastNode.getElementsByTagName('textarea')// Since select is in both marks and other fields. Except the Extra fields ehich has a textarea.
+                debug(lastNode.id)
+
+                
+                lastID=l[0].id.split('_')[2]                 
+                
+                newID = parseInt(lastID) + 1; // ID of the clone should be one more than the ID of the lastNOde.
+                
+                allInputs = clone.getElementsByTagName('input');
+                allSelects = clone.getElementsByTagName('select');
+                allTextAreas = clone.getElementsByTagName('textarea');
+                all = [allInputs,allSelects,allTextAreas];
+
+                //Change the ID's of all the elements in the TR
+                all = [allInputs,allSelects,allTextAreas];
+                for (var i=0;i<all.length;i++)
+                {
+                    currentColl = all[i];
+
+                    for (var j=0; j<currentColl.length; j++)
+                    {
+                        id = currentColl[j].id.split('_'); //get the number out
+                        id[2] = newID; //replace it with the incremented number
+                        currentColl[j].id = id.join('_'); //we have the new id!
+                        debug("We got an " + currentColl[j].type) 
+                        if (currentColl[j].type != 'button' && currentColl[j].type !='hidden')
+                            currentColl[j].value = ""
+                    }
+                }
+
+                //finally change the Id of the container too!
+                //writing this code seperately because can't find a way to include a single element in the above _all_ wali list :(
+                id = clone.id.split('_');
+                id[2] = newID;
+                clone.id = id.join('_')
+/*                
+                for(var i=0;i<lastNode.children.length;i++)
+                   {
+                    for (var j=0;j<lastNode.children[i].children.length;j++)
+                    {
+                        id=lastNode.children[i].children[j].id.split('_');
+                        id[2]=parseInt(id[2])+1;
+                        clone.children[i].children[j].id=id.join('_');
+                        
+                        /* if (clone.children[i].children[j].type != 'button' && (clone.children[i].children[j].tagName == 'textarea' || clone.children[i].children[j].tagName == 'TEXTAREA'))
+                        {
+                            clone.children[i].children[j].value="";
+                        }  
+                    }
+                   }
+               */
+                if((formflag)&&(c.id.indexOf('marks')>-1))
+                {
+                    removeButton.addEventListener('click',function(){ clone.parentNode.removeChild(clone)},false);
+                    id[1]='remove';
+                    var removeId=id.join('_');
+
+                    removeButton.id=removeId;
+                    clone.appendChild(removeButton);
+                }
+                c.parentNode.appendChild(clone);
+                clone.children[0].children[0].focus()
+
+            }
+        else // for LI type..
+        {
+            var bacche = c.children; // how many LI;s are there - for pre-filled, there will be more than one.
+            l=bacche.length;
+            
+            var clone=bacche[0].cloneNode(true); // CLone the first LI.
+            
+            id=bacche[l-1].children[0].id.split('_');
+            id[2]=parseInt(id[2])+1; // get Id of last child and increemnt by 1.
+            clone.children[0].id=id.join('_');
+            clone.children[0].value="";
+            debug(formflag)
+            
+            if(formflag) // if not-prefilled, then clonned element would not have the remove button
+            {
+                debug('ds');
+                removeButton.addEventListener('click',function(){ clone.parentNode.removeChild(clone)},false);
+                id[1]='remove';
+                var removeId=id.join('_');
+                removeButton.id=removeId;
+
+                clone.appendChild(removeButton);
+ //             clone.innerHTML+="<input type='button' value='remove' onclick='removeNode(elName);'>";
+            }
+          c.appendChild(clone);
+          clone.children[0].focus()
+            
+        }
+             
+        /*
+        if (c.tagName=="TR") 
+          {  
+            c.parentNode.appendChild(c.cloneNode(true));
+            tr=document.createElement('TR');
+            c.parentNode.parentNode.appendChild(tr);
+            for(var i=0;i<l;i++)
+                { 
+                 var clone=bacche[i].cloneNode(true);
+                 id=clone.id.split('_');
+                 id[2]=parseInt(id[2])+1
+                 clone.id=id.join('_')
+                 tr.appendChild(clone);
+                 
+                 }
+          }
+        else
+        {
+            var clone=bacche[l-1].cloneNode(true);
+            id=clone.id.split('_');
+            id[2]=parseInt(id[2])+1
+            clone.id=id.join('_')
+            c.appendChild(clone);
+        }*/
+ }
+
+</script>
+{% endblock %}
+{% block content %}
+<h3 align='center'>Your Details</h3>
+{% if flag == 'form' %}
+<form name='f' id='info_form' onsubmit="return onSubmitValidator();" method='post' enctype='multipart/form-data'  action='#' original_action='{{ROOT}}/student_info/{{ prn }}/submit'>
+{% else %}
+<form name='f' id='info_form' onsubmit="return onSubmitValidator();" method='post' enctype='multipart/form-data'  action='#' original_action='{{ROOT}}/student_info/{{ s.prn }}/submit'>
+{% endif %}
+{% csrf_token %}
+<div id="tabs">
+			<ul>
+				<li class='sectionlinks'><a href="#tabs-1">Getting Started</a></li>
+				<li class='sectionlinks'><a href="#tabs-2">Marks and Qualifications*</a></li>
+				<li class='sectionlinks'><a class='sectionlinks' href="#tabs-3">Strengths and Weaknesses*</a></li>
+				<!--<li><a href="#tabs-4">Certification</a></li>-->
+				<li class='sectionlinks'><a class='sectionlinks' href="#tabs-5">Software Skillset</a></li>
+				<li><a class='sectionlinks' href="#tabs-6">Other fields</a></li>
+				{% comment %}<li><a href="#tabs-7">Projects Undertaken</a></li>
+				<li><a href="#tabs-8">Academic Achievements</a></li>
+				<li><a href="#tabs-9">Exta Curricular</a></li>{% endcomment %}
+				<li><a class='sectionlinks' href="#tabs-10">Personal*</a></li>
+				<li><a class='sectionlinks' href="#tabs-11">Photo *</a></li>
+                {% if yr != 'staff' %}
+                <li><a class='sectionlinks' href="#tabs-12">Company Specific information*</a></li>
+                {% endif %}
+			</ul>
+
+<div id='tabs-1'>
+ <label for="fullname"> <a class='tooltip'href = '#'>Full name*<span class='tooltip'>as in your certificates</span></a></label>
+        <input type="text" id='fullname' mandatory='true' size=60 value="{{ s.fullname }}" datatype='string' desc='Full Name'>
+     <br><BR>    
+  Gender* 
+  {% if s.sex == 'f' %}
+          <input type="radio"  id='sex' name="sex" value='m'>Male
+          <input type="radio"  id='sex' name="sex" value='f' checked=true >Female<br><br>
+   {% else %}       
+		  <input type="radio"  id='sex' name="sex" value='m'checked=true >Male
+          <input type="radio"  id='sex' name="sex" value="f">Female<br><BR><br>
+  {% endif %}        
+  Mobile Number +91<input type='text' mandatory='true' id='phone' maxlength=10 size=10 name="phone" value='{{ s.phone }}' datatype='numeric' desc='Mobile Number'><BR><BR>
+  Email ID* <input type='text' id='email' name='email' mandatory='true' value='{{ s.email }}' datatype='email' desc='Email Address'>
+<br>         <br>
+
+  Birthdate*
+  <select datatype = "date" id="birthdate_date"  onBlur="change(this);" mandatory='true' onFocus="fillOptions(this);">
+        {% if p.birthdate.day %}
+            <option>{{ p.birthdate.day }} </option>
+        {% endif %}
+ </select>
+  <select datatype = "month" id="birthdate_month" onBlur="change(this);" mandatory='true' onFocus="fillOptions(this);"> 
+        {% if p.birthdate.month %}
+               <option>{{ p.birthdate|date:"b"|title }}</option>
+        {% endif %}
+  </select>
+  <select datatype = "year"  id="birthdate_year" onBlur="createDates(this);" mandatory='true' onFocus="fillOptions(this);">
+        {% if p.birthdate.year %}
+            <option>{{ p.birthdate.year }}</option>
+        {% endif %}
+  </select>  
+ <hr>  
+ <br><BR>
+
+    <label for = "career_objective"> Career Objective *</label> <br>
+      <textarea rows='3' cols = '124' title="Keep it short and simple"  name = "career_objective" id="career_objective" mandatory='true' desc='Career Objective'>{{ s.career_objective }}</textarea>
+
+</div>
+
+
+<div id='tabs-2'>
+  <table cellpadding=13>
+  <tr>
+    <th>Class</th>
+    <th>Board/University</th>
+    <th>Score</th>
+    <th>Year</th>
+  </tr>
+  {% for marks in m %}
+  <tr id='tr_marks_{{forloop.counter}}'>
+  <td> <input type="text" id="marks_course_{{forloop.counter}}" size={{ marks.course|length }} maxlength='30' value="{{ marks.course }}" datatype='string'></td>
+  <td><input type="text" id="marks_uni_{{ forloop.counter }}" value="{{ marks.uni }}" size={{marks.uni|length}} maxlength='100' datatype='string'></td>
+  <td>
+  {% if not marks.marks %}
+      <input type="text" id='marks_marks_{{ forloop.counter }}' value="{{marks.markstype}}" disabled=true size='10' maxlength='15' datatype='string'> 
+  {% else %}
+      <input type="text" id='marks_marks_{{ forloop.counter }}' size='10' maxlength='10' value="{{marks.marks}}" onBlur='validate(this)' datatype='float'> 
+  {% endif %}
+
+  <select name ='marks_markstype_{{forloop.counter}}' id='marks_markstype_{{forloop.counter}}' onChange="change(this);">
+          {% if marks.markstype %}
+            <option>{{marks.markstype }}</option>
+          {% endif %}
+          <option>Total</option>
+          <option>GPA</option>
+          <option>Appearing</option>
+          <option>Result Awaiting</option>
+          </select>
+   {% if not marks.outof %}
+       Out Of <input type="text" id='marks_outof_{{ forloop.counter }}' size='10' maxlength='10' value="{{ marks.markstype }}" disabled=true onblur='validate(this)' datatype='string'> 
+   {% else %}
+  Out Of <input type="text" id='marks_outof_{{ forloop.counter }}' size='10' maxlength='10' value="{{marks.outof}}" onblur='validate(this);' datatype='float'> 
+  {% endif %}
+</td>
+  <td><select datatype = "year" id="marks_year_{{ forloop.counter }}"  onFocus="fillOptions(this);" onBlur="createDates(this);" mandatory='true'>
+        <option>{{ marks.fromDate.year }}</option> 
+      </select>
+  </td>
+  </tr>
+  
+  {% empty %}
+  <tr id = 'tr_marks_1'>
+    <td>X<sup>th</sup><input type="hidden" id="marks_course_1" name='marks_course_1' value="Xth"></td>
+    <td><input type ='text' size=40 id="marks_uni_1" datatype='string' ></td>
+    <td><input type='text' size='10' maxlength='10' id="marks_marks_1" title="Total marks" onBlur='validate(this)' datatype='float'> 
+    <input type="hidden" name = 'marks_markstype_1' id="marks_markstype_1" value="Total">
+     Out Of <input type="text" size=10 maxlength='10' id='marks_outof_1' onBlur='validate(this)' datatype='float'> </td>
+    <td><select datatype = "year" id="marks_year_1"  onFocus="fillOptions(this);"onBlur="createDates(this)" mandatory='true'> </select></td>
+  </tr>
+  <tr id = 'tr_marks_2'>
+      <td>XII<sup>th</sup><input type="hidden" id="marks_course_2" name='marks_course_2' value="XIIth"></td>
+      <td><input type ='text' size=40 id="marks_uni_2" datatype='string' ></td>
+      <td><input type='text' size=10 id="marks_marks_2" title='Total marks' maxlength='10' onBlur='validate(this)'datatype='float'>
+      <input type="hidden" name = 'marks_markstype_2' id="marks_markstype_2" value="Total" maxlength='10'>
+       Out Of <input type="text" id='marks_outof_2' size=10 maxlength=10 onBlur='validate(this)' datatype='float' > </td>
+      <td><select datatype = "year" id="marks_year_2"  onFocus="fillOptions(this);" onBlur="createDates(this)" mandatory='true'> </select> </td>
+        </tr>
+  <tr id = 'tr_marks_3'>
+      <td>
+      {% comment %}
+      <select name="course-g" id="marks_course_3" onFocus="fillOptions(this)"></select>
+      {% endcomment %}
+      <input type='text' value='' id='marks_course_3' size=20 maxlength='30' datatype='string'> 
+      </td>
+      <td><input type ='text' size=40 id="marks_uni_3" datatype='string'></td>
+      <td><input type='text' size=10 id="marks_marks_3" maxlength='10' onBlur='validate(this)' datatype='float'>
+          <select name ='marks_markstype_3' id='marks_markstype_3' onChange="change(this);" title="Total Marks">
+          <option>Total</option>
+          <option>GPA</option>
+          <option>Appearing</option>
+          <option>Result Awaiting</option>
+          </select>
+       Out Of <input type="text" id='marks_outof_3' size=10 maxlength='10' onBlur='validate(this)' datatype='float'>
+
+      </td>
+      <td>
+        <select datatype = "year" id="marks_year_3"  onFocus="fillOptions(this);" onBlur="createDates(this)" mandatory='true'> </select>
+     </td>
+  </tr>
+  {% if yr == '14' %}
+  <tr id='tr_marks_4'>
+      <td>
+      {% comment %}
+         <select name="course-pg" id="marks_course_4" onFocus="fillOptions(this)"></select> 
+      {% endcomment %}
+      <input type='text' value='' id='marks_course_4' size=20 maxlength='30' datatype='string'>
+      </td>
+      <td><input type ='text' size=40 id="marks_uni_4" datatype='string'></td>
+      <td><input type='text' size='10' id="marks_marks_4" maxlength='10' onBlur='validate(this)' datatype='float'>
+          <select name = 'marks_markstype_4' id='marks_markstype_4'onChange="change(this);" title="Total Marks">
+          <option>Total</option>
+          <option checked =true>GPA</option>
+          <option>Appearing</option>
+          <option>Result Awaiting</option>
+          </select>
+       Out Of <input type="text" id='marks_outof_4' size='10' maxlength='10' onBlur='validate(this)' datatype='float'>
+      </td>
+      <td><select datatype = "year" id="marks_year_4"  onFocus="fillOptions(this);" onBlur="createDates(this)" mandatory='true'> </select></td>
+      
+  </tr>
+  {% endif %}
+
+  {% endfor %}
+  </table>
+  <input type='button'  onClick="addNew('tr_marks_3',false);" value='Add Another'>    
+</div>
+<div id= 'tabs-3'>
+  <div id='strengths'>
+      {% for st in p.strength|split:',' %}
+        <li><input type="text" id="personal_strength_{{ forloop.counter }}" value="{{ st }}" mandatory='true' datatype='string' desc='Strengths and Weaknesses'>
+            <input type='button' value='remove' onClick="remove(this.parentNode)";>
+        </li>
+        {% empty %}
+        <li><input type="text" id="personal_strength_1" mandatory='true' datatype='string' desc='Strengths and Weaknesses'></li>
+       {% endfor %} 
+  </div>   
+  <input type='button'onClick="addNew('strengths','{{p.strength}}');" value='Add Another'>    
+
+</div>
+<div id = 'tabs-5'>
+   <ul>
+            
+            <li>Programming languages
+            <ul id = 'programming'>
+                    {% for software in sw.programming|split:',' %}
+                    <li><input type='text' id="swExposure_programming_{{ forloop.counter }}" value="{{ software }}" >
+                         <input type='button' value='remove' onClick="remove(this.parentNode)"; >
+                    </li>
+                {% empty %}
+                 <li><input type='text' id="swExposure_programming_1" >
+                {% endfor %}
+             </ul>   
+             <input type='button'  onClick="addNew('programming','{{sw.programming}}');" value='Add Another'>   
+             <li>Database
+            <ul id = 'database'>
+            {% if sw.databases %}
+                {% for software in sw.databases|split:',' %}
+                
+                    <li><input type='text' id="swExposure_databases_{{ forloop.counter }}"  value="{{ software }}">
+                        <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                    </li>
+                 {% endfor%}   
+                {% else %}
+                    <li><input type='text' id="swExposure_databases_1">
+                {% endif %}
+             </ul>   
+             <input type='button'  onClick="addNew('database','{{sw.databases}}');" value='Add Another'>   
+            <li>OS
+            <ul id = 'os'>
+                             {% for os in sw.OS|split:',' %}
+                  <li><input type='text' id="swExposure_OS_{{ forloop.counter }}" value="{{ os }}">
+                        <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                    </li>
+              
+              {% empty %}
+                    <li><input type='text' id="swExposure_OS_1">
+              {% endfor %}
+             </ul>   
+             <input type='button'  onClick="addNew('os','{{sw.OS}}');" value='Add Another'>   
+            <li>Web Tools
+            <ul id = 'web'>
+             {% if swTools %}
+                {% for web in sw.webTools|split:',' %}
+                <li><input type='text' id="swExposure_webTools_{{ forloop.counter }}" value="{{ web }}">
+                    <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                </li>
+                {% endfor%}  
+             {% else %}
+                <li><input type='text' id="swExposure_webTools_1"></li>
+             {% endif %}
+             </ul>   
+             <input type='button'  onClick="addNew('web','{{sw.webTools}}');" value='Add Another'>   
+            <li>Other Packages
+            <ul id = 'packages'>
+                {% if swPackages %} 
+                    {% for software in sw.swPackages|split:',' %}
+                    <li><input type='text' id="swExposure_swPackages_{{ forloop.counter }}" value="{{ software }}">
+                         <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li><input type='text' id="swExposure_swPackages_1">
+                {% endif %}
+             </ul>   
+             <input type='button'  onClick="addNew('packages','{{sw.swPackages}}');" value='Add Another'>  
+         </ul>
+</div>
+<div id = 'tabs-6'>
+<div id ='accordion'>
+    <div>
+        <h3><a href='#'>Work Experience</a></h3>
+        <div>
+<table>
+<tr>            <th>Job Description</th><th>Start Date</th><th>End Date</th></tr>
+            {% for wex in w %}
+            <tr id = 'workex'>
+                <td><textarea rows=3 cols=30 id="workex_desc_{{ forloop.counter }}">{{ wex.desc }}</textarea></td>
+             
+             <td>
+                  <select datatype = "month" id="workex_startmonth_{{forloop.counter}}" onFocus="fillOptions(this);"> 
+                  {% if wex.fromDate.month %}
+                     <option>{{ wex.fromDate|date:"b"|title }}</option> 
+                  {% endif %}
+               </select>
+               <select datatype = "year"  id="workex_startyear_{{forloop.counter}}" onFocus="fillOptions(this);" onBlur="createDates(this);"> 
+                  {% if wex.fromDate.year %}
+                    <option>{{ wex.fromDate.year }}</option> 
+                  {% endif %}
+               </select>  
+            </td>
+            <td>
+                <select datatype = "month" id="workex_endmonth_{{forloop.counter}}" onFocus="fillOptions(this);"> 
+                {% if wex.endDate.month %}
+                    <option>{{ wex.endDate|date:"b"|title }}</option> 
+                {% endif %}
+                </select>
+                <select datatype = "year"  id="workex_endyear_{{forloop.counter}}" onFocus="fillOptions(this);" onBlur="createDates(this);"> 
+                   {% if wex.endDate.year %}
+                       <option>{{ wex.endDate.year }}</option> 
+                   {% endif %}
+                  </select>  
+            </td>
+            <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+             </tr>
+             {% empty %}
+              <tr id = 'workex'>
+                <td><textarea rows=3 cols=30 id="workex_desc_1"></textarea></td>
+             
+             <td>
+                  <select datatype = "month" id="workex_startmonth_1" onFocus="fillOptions(this);"> </select>
+                  <select datatype = "year"  id="workex_startyear_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select>  </td>
+            <td>
+                <select datatype = "month" id="workex_endmonth_1" onFocus="fillOptions(this);"> </select>
+                <select datatype = "year"  id="workex_endyear_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select>  </td>
+             <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+            </tr>
+
+             {% endfor %}
+</table>
+             <input type='button'  onClick="addNew('workex');" value='Add Another'>   
+    </div> 
+    </div>
+<div>
+<h3><a class='sectionlinks' href='#'>Certifications</a></h3>
+<div>
+
+<table cellpadding=13>
+  <tr><th>Name and description </th><th>month/year</th>
+  {% for cert in c %}
+   <tr id='certi'>
+    <td><textarea rows=2 cols=50 title="" id='certification_desc_{{ forloop.counter }}' >{{ cert.desc }}</textarea></td>
+    <td><select datatype = "month" id="certification_month_{{ forloop.counter }}" onFocus="fillOptions(this);">
+    
+    {% if cert.fromDate.month %}
+        <option>{{ cert.fromDate|date:"b"|title }}</option>
+    {% endif %}
+
+    </select>
+    <select datatype = "year"  id="certification_year_{{ forloop.counter }}" onFocus="fillOptions(this);" onBlur="createDates(this);"> 
+        {% if cert.fromDate.year %}
+          <option>{{ cert.fromDate.year }}</option>
+        {% endif %}    
+    </select>
+    </td>
+     <td>
+            <input type='button' value='remove' onClick="remove(this.parentNode)">
+     </td>
+  </tr>
+   {% empty %}
+   <tr id='certi'>
+    <td><textarea rows=2 cols=50 id='certification_desc_1'></textarea></td>
+    <td><select datatype = "month" id="certification_month_1" onFocus="fillOptions(this);"></select>
+        <select datatype = "year"  id="certification_year_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select></td>
+    <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+</tr>
+   {% endfor %} 
+  </table>
+  <input type='button' onClick="addNew('certi');" value='Add Another'>      
+</div>
+</div>
+<div>
+    <h3><a class='sectionlinks' href ='#'>Projects Undertaken</a></h3>
+    <div>
+  <table>
+            <tr><th>title</th><th>Description</th><th>Start Date</th><th>End Date</th></tr>
+            {% for pr in pro %}
+            <tr id = 'projects'>
+             <td><input type='text' id="project_heading_{{ forloop.counter }}" value="{{ pr.heading }}"></td>
+             <td><textarea id="project_desc_{{ forloop.counter }}" rows=2 cols=30>{{ pr.desc }}</textarea></td>
+
+         <td>
+              <select datatype = "month" id="project_startmonth_{{ forloop.counter }}" onFocus="fillOptions(this);"> 
+                    {% if pr.fromDate.month %}
+                        <option>{{ pr.fromDate|date:"b"|title }}</option> 
+                    {% endif %}
+            </select>
+      <select datatype = "year"  id="project_startyear_{{ forloop.counter }}" onFocus="fillOptions(this);" onBlur="createDates(this);"> 
+                    {% if pr.fromDate.year %}
+                        <option>{{ pr.fromDate.year }}</option>
+                    {% endif %}    
+            </select>
+            </td>
+            <td>
+                <select datatype = "month" id="project_endmonth_{{ forloop.counter }}" onFocus="fillOptions(this);">
+                {% if pr.endDate.month %}
+                  <option>{{ pr.endDate|date:"b"|title}}</option>
+                {% endif %}
+                </select>
+                <select datatype = "year"  id="project_endyear_{{ forloop.counter}}" onFocus="fillOptions(this);" onBlur="createDates(this);">
+                {% if pr.endDate.year %}
+                    <option>{{ pr.endDate.year }}</option>
+                {% endif %}
+                </select>
+                </td>
+
+                <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+                </td>
+             </tr>   
+
+            {% empty %}
+            <tr id = 'projects'>
+             <td><input type='text' id="project_heading_1"></td>
+             <td><textarea id="project_desc_1" rows=2 cols=30></textarea></td>
+ 
+             <td>
+                  <select datatype = "month" id="project_startmonth_1" onFocus="fillOptions(this);"> </select>
+                  <select datatype = "year"  id="project_startyear_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select>  </td>
+            <td>
+                <select datatype = "month" id="project_endmonth_1" onFocus="fillOptions(this);"> </select>
+                <select datatype = "year"  id="project_endyear_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select>  </td>
+             <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+</tr>   
+             {% endfor %}
+</table>
+             <input type='button'  onClick="addNew('projects');" value='Add Another'>   
+
+</div>
+</div>
+ <div>
+    <h3><a class='sectionlinks' href='#'>Academic Achievements</a></h3>
+   <div> 
+   <table>
+            <tr><th>Description</th><th>Year</th></tr>
+        {% for ac in a %}
+            <tr id = 'academic'>
+               <td><textarea rows=2 cols=50 id="academic_desc_{{ forloop.counter }}">{{ ac.desc }}</textarea></td>
+               <td>
+                <select datatype = "year"  id="academic_year_{{forloop.counter }}" onFocus="fillOptions(this);" >
+                    {% if ac.fromDate.year %}
+                        <option>{{ac.fromDate.year}}</option> 
+                    {% endif %}
+               </select></td>
+               <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+               </td>
+            </tr>   
+            {% empty %}
+            <tr id='academic'>
+                <td><textarea rows=2 cols=50 id="academic_desc_1"></textarea></td>
+                <td><select datatype = "year"  id="academic_year_1" onFocus="fillOptions(this);" onblur="createDates(this)" > </select>  </td>
+
+            </tr>
+            {% endfor %}
+</table>
+             <input type='button'  onClick="addNew('academic');" value='Add Another'>   
+
+</div>
+</div>
+ <div>
+ <h3><a class='sectionlinks' href='#'>Extra Curricular</a></h3>
+ <div>
+     <table>
+            <tr><th>Description</th><th>YEar</th></tr>
+        {% for extra in e %}
+            <tr id = 'extracurricular'>
+                <td><textarea rows=2 cols=50 id="extracurricular_desc_{{ forloop.counter }}">{{ extra.desc }}</textarea></td>
+                <td>
+                    <select datatype = "year"  id="extracurricular_year_{{ forloop.counter }}" onFocus="fillOptions(this);" onblur="createDates(this)">
+                        {% if extra.fromDate.year %}
+                            <option>{{extra.fromDate.year}}</option> 
+                        {% endif %}
+                    </select>
+               </td>
+               <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+               </td> 
+            </tr>    
+        {% empty %}
+            <tr id = 'extracurricular'>
+               <td><textarea rows=2 cols=50 id="extracurricular_desc_1"></textarea></td>
+             
+                <td><select datatype  = "year"  id="extracurricular_year_1" onFocus="fillOptions(this);" onBlur="createDates(this);"> </select>  </td>
+           <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+ </tr>    
+         {% endfor %}   
+</table>
+             <input type='button'  onClick="addNew('extracurricular');" value='Add Another'> 
+</div>
+</div>
+
+<div>
+<h3><a class='sectionlinks' href='#'>Any other custom Section</a></h3>
+<div>
+   <li>Section Title <input type='text' id='ExtraField_title_1'  value='{{ex.0.title}}'><br>
+        <table>
+            <tr><th>Description</th><th>Year</th></tr>
+            {% for A in ex %}
+             <tr id = 'extrafield'>
+
+            <td><textarea rows=2 cols=50 id="ExtraField_desc_{{forloop.counter}}">{{A.desc}}</textarea></td>
+             
+            <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td> 
+            {%empty%}
+            <tr id = 'extrafield'>
+               <td><textarea rows=2 cols=50 id="ExtraField_desc_1"></textarea></td>
+             
+            <td>
+            <td>
+                <input type='button' value='remove' onClick="remove(this.parentNode)">
+            </td>
+
+            </tr>
+            
+            {% endfor %}
+</table>
+        
+        <input type='button'  onClick="addNew('extrafield');" value='Add Another'>  
+        <br><BR>
+</div>
+</div>
+</div><!-- end of accordion -->
+</div>
+<div id='tabs-10'>
+        <ul>
+             <li>Mother's Name   <input type='text' id="personal_mother_name" datatype='string' value="{{ p.mother_name }}" mandatory='true' desc="Mother's Name">
+             <li>Mother's Occupation  <input type='text' id="personal_mother_occupation" value="{{ p.mother_occupation }}" mandatory='true' desc ="Mother's occupation">
+             <li>Father's Name        <input type='text' id="personal_father_name" datatype='string' value="{{ p.father_name }}" mandatory='true' desc = "Father's name">
+             <li>Father's Occupation  <input type='text' id="personal_father_occupation" value="{{ p.father_occupation }}" mandatory='true' desc="Father's occupation">
+             <li>Languages known
+            <ul id = 'lang'>
+                {% if p.languages %}
+                    {% for l in p.languages|split:',' %}
+                        <li><input type='text' id="personal_languages_{{forloop.counter}}" datatype='string' value="{{ l }}" mandatory='true' desc="Languages">
+                            <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                        </li>
+                    {% endfor%}
+                {% else %}
+                        <li><input type="text" id="personal_languages_1" mandatory='true' datatype='string' desc="Languages"></li>
+                {% endif %}
+             </ul>   
+             <input type='button'  onClick="addNew('lang','{{p.languages}}');" value='Add Another'>   
+             <br><BR><BR>
+            <li>Permanent Address<br>
+            
+                <textarea rows=5 cols=50 name="personal_per_address" id="personal_per_address" desc = 'Permanent Address' mandatory='true'>{{ p.per_address }}</textarea>
+               <br> <BR>
+            <li>Address of Correspondance<br>
+                <textarea rows=5 cols=50 id="personal_corr_address" name="personal_corr_address" desc='Correspondence Address' mandatory='true'>{{ p.corr_address }}</textarea>  
+
+            <li> Hobbies    
+                <ul id = 'hobbies'>
+                {% if p.hobbies %}
+                {% for h in p.hobbies|split:',' %}
+                     <li><input type='text' id="personal_hobbies_{{forloop.counter }}" value="{{ h }}" datatype='string'>
+                         <input type='button' value='remove' onClick="remove(this.parentNode)";>
+                     </li>
+                     {% endfor %}
+                {% else %}
+                    <li><input type='text' id="personal_hobbies_1" datatype='string'>
+                {% endif %}    
+             </ul>   
+             <input type='button'  onClick="addNew('hobbies','{{p.hobbies}}');" value='Add Another'>   
+          <li> Areas Of Interest
+                <ul id = 'areasofinterest'>
+                    {% if p.areasofinterest %}
+                 {% for h in p.areasofinterest|split:',' %}
+                     <li><input type='text' id="personal_areasofinterest_{{forloop.counter }}" value="{{ h }}">
+                         <input type='button' value='remove' mandatory='true' onClick="remove(this.parentNode)";>
+                     </li>
+                     {% endfor %}
+                {% else %}
+                    <li><input type='text' id="personal_areasofinterest_1">
+                {% endif %}    
+             </ul>   
+             <input type='button'  onClick="addNew('areasofinterest','{{p.areasofinterest}}');" value='Add Another'> </ul>
+  </div>
+<div id= 'tabs-11'>
+{% if flag == "edit" %}
+       <img id='photo' src="{{MEDIA_URL}}/STORE/photos/{{ s.prn }}.png" height=150 width=180>
+      <input type = 'file' id='photo' name='photo'>
+Change the uploaded Photograph
+{% else %}
+      <span id='photo'><i>No photo uploaded!</i></span>
+    Upload your recent passport sized photograph.
+     <input type = 'file' id='photo' name='photo' mandatory='true'>
+{% endif %}
+<br><br>
+</div>
+
+<!-- company specific information wala tab -->
+<div id= 'tabs-12'> 
+{% if yr != 'staff' %}
+Do you have any active backlogs?
+{% if s.backlogs %}
+          <input type="radio"  name="backlogs" value='yes' checked = true>Yes
+          <input type="radio"  name="backlogs" value=''>No<br><br>
+   {% else %}      
+		  <input type="radio"  name="backlogs" value='yes' >Yes
+          <input type="radio"  name="backlogs" value='' checked = true>No<br><BR><br>
+  {% endif %} 
+<BR><BR>
+Did you have any year drop ?
+{% if s.yeardrop %}
+          <input type="radio"  name="yeardrop" value='yes' checked = true>Yes
+          <input type="radio"  name="yeardrop" value='' >No<br><br>
+   {% else %}       
+		  <input type="radio"  name="yeardrop" value='yes' >Yes
+          <input type="radio"  name="yeardrop" value='' checked = true>No<br><BR><br>
+  {% endif %} 
+<BR><BR>
+
+{% for c in cs %}
+<!-- {{ c }} -->
+   {% if c.valueOf.fieldType == 'special' %}
+   <!-- We got a special -->
+    {% if c.valueOf.key == 'strongAreas' %}
+    Strong Areas 
+        <select id = "companySpecific_strongAreas" name = 'strongAreas' onFocus="fillOptions(this)" multiple>
+            {% for a in c.value|split:',' %}
+                <option selected >{{a}}</option>     
+            {% endfor %}
+        </select>
+    {% endif %}<!-- end of strong areas wala if -->
+    {% if c.valueOf.key == 'weakAreas' %}
+    Weak Areas
+        <select  id ="companySpecific_weakAreas" name = 'weakAreas' onFocus="fillOptions(this)" multiple=true>
+            {% for a in c.value|split:',' %}
+                <option selected >{{a}}</option>     
+            {% endfor %}
+
+        </select>
+        <BR><BR>
+    {% endif %} <!-- end of weak areas wala if -->
+   {% endif %} <!-- special field type wala if -->
+{% comment %} Have to d this because there is no elif in django template syntax {% endcomment%}
+    <BR>
+    <B>{{c.valueOf.displayText}}</b>{% if c.valueOf.is_mandatory %}<B><sup>*</sup></B>{%endif%}
+    {% if c.valueOf.fieldType == 'radio' %}
+        <!-- got a radio -->
+        {% if c.value == 'yes' %}
+         Yes  <input type='radio' name='companySpecific_{{c.key}}' value='yes' checked>
+         No   <input type='radio' name='companySpecific_{{c.key}}' value='no'>
+        {% else %}
+         Yes  <input type='radio' name='companySpecific_{{c.key}}' value='yes'>
+         No   <input type='radio' name='companySpecific_{{c.key}}' value='no' checked>
+         {% endif%}
+     {% endif %} <!-- end of radio wala if-->
+     {% if c.valueOf.fieldType == 'textarea'%}
+     <textarea id = 'companySpecific_{{c.valueOf.key}}' {% if c.valueOf.is_mandatory %} mandatory='true'{% endif %} datatype = '{{c.valueOf.dataType}}'>{{c.value}}</textarea>
+     {% else %} 
+        <input type='{{c.valueOf.fieldType}}' id='companySpecific_{{c.key}}'  {% if c.valueOf.is_mandatory%} mandatory='true'{% endif%} datatype = '{{c.valueOf.dataType}}' value = '{{c.value}}'>
+    {% endif %}<!-- fieldtypes wala if -->
+{% empty %}
+&nbsp;
+{% comment %}
+This area and the above id for rendering the special Field types... Write here, the code when there is no pror submission. and in the above 'if' , write the code where there IS propr submission. Take strong and weak areas for example
+Strong Areas
+<select id = "companySpecific_strongAreas" name = 'strongAreas' onFocus="fillOptions(this)" multiple></select>
+Weak Areas
+<select id = "companySpecific_strongAreas" name = 'strongAreas' onFocus="fillOptions(this)" multiple></select>
+
+{% endcomment %}
+{% endfor%}
+
+<!-- unfilled items -->
+{% for c in mt %}
+<BR>
+    <B>{{c.displayText}}</b> {%if c.is_mandatory %}<b><sup>*</sup></b>{% endif %}
+    {% if c.fieldType == 'radio' %}
+         Yes  <input type='{{c.fieldType}}' name='companySpecific_{{c.key}}'  value='yes'>
+         No   <input type='{{c.fieldType}}' name='companySpecific_{{c.key}}' {% if c.is_mandatory %} checked {% endif %} value='no'>
+     {% else %}
+     {% if c.fieldType == 'textarea' %}
+        <textarea id = 'companySpecific_{{c.key}}' {% if is_mandatory %} mandatory = 'true' {% endif %} datatype = '{{c.dataType}}'></textarea>
+     {% else %} 
+        <input type='{{c.fieldType}}' id='companySpecific_{{c.key}}' {%if c.is_mandatory %} mandatory = 'true' {% endif %} datatype = '{{c.dataType}}'>
+    {% endif %}
+    {%endif%}
+{% endfor%}
+  
+</div> 
+{% endif %}
+</div><!-- end of the tabs div -->
+  <input type='hidden' value='0' name='allok' id='allok'>
+
+<div id='buttons' class='#' style='text-align:center;'>
+    <input type='button' value='Home' onclick="javascript:location.href='{{ROOT}}/home'">
+    <input type='submit' value='Submit Information!'><input type='reset'>
+</div>
+
+</form>
+<noscript>
+    <h2 align='center' style="color: red;"> Hey, you need to enable JavaScript if you want us to help you! </h2>
+</noscript>
+{% endblock %}
+
+</body>
+</html>

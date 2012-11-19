@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+ Login 
+{% endblock %}
+{% block content %}
+<form action='{{ROOT}}/ldap_login/' method='POST'>
+    {% csrf_token %}
+    {% if message != None %}
+        <h4 align='center' style='color: red' size='10'> {{ message }} </h4>
+    {% endif %}
+    <p align='center' style="{font-size: 13pt;}"> Please login using your SICSR Authentication (the one you use for Internet access, Moodle, <a href='http://projects.sdrclabs.in/change_agent'>Change Agent</a>, <a href='http://live.sdrclabs.in'>SDRCLive</a>)</p>
+    <table align='center'>
+    <tr>
+        <td><label for='username'>Username</label></td>
+        <td><input type='text' name='username' value='YOURPRN' onFocus="this.value=''" maxlength='30'/></td>
+    </tr><tr>
+        <td><label for='password'>Password</label></td>
+        <td><input type='password' name='password' value='PASSWORD' onFocus="this.value=''" maxlength='255'/></td>
+    </tr>
+    <tr>
+        <td><td><input type='submit' value='Login!'/></td>
+    </tr>
+    </table>
+</form>
+{% endblock %}

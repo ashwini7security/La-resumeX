@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}
+    JobPosting
+{% endblock %}
+{% block content %}
+<script>
+// This function checkes whether walkin is selected, then how to apply firld automaticalaly becomes walkin, othewise, they need to enter in the textarea...
+function makeWalkin(o)
+{
+    if (!(o.checked))
+    {
+        c=document.getElementById('id_how_to_apply')
+        c.disabled=false;
+        c.focus();
+        /*
+        This actually creates a Tr, Th, TD fo an extra how-to-apply field.. that appears on click 
+        tr=document.createElement('tr');
+        tr.id="how_to_apply"
+        alert(o)
+        th=document.createElement('th');
+        td=document.createElement('td');
+        a=document.createTextNode('how to apply')
+        textarea=document.createElement('textarea')
+        textarea.rows=5;
+        textarea.cols=30;
+        textarea.name="how_to_apply"
+        td.appendChild(textarea)
+        th.appendChild(a);
+        tr.appendChild(th);
+        tr.appendChild(td);
+        o.parentNode.parentNode.parentNode.appendChild(tr)
+        */
+    }
+   else
+   {
+       c=document.getElementById('id_how_to_apply');
+           c.value='walk-in';
+           c.disabled=true
+   }
+}
+function oncemore()
+{
+    o=document.getElementById('id_walk_in');
+    h=document.getElementById('id_how_to_apply');
+    if (h.value=='walk-in')
+        o.checked=true;
+
+        
+    makeWalkin(o);
+}
+
+function validate()
+{
+    // function is called on submit, enables the disabled field. and if walkin is not selected then ensures that the textaera part is filled.
+    walkin=document.getElementById('id_walk_in');
+    howto=document.getElementById('id_how_to_apply');
+    err=document.createTextNode('Cant leave this empty')
+    if (walkin.checked && howto.disabled)
+    {
+        //alert("enabling the 'how to apply' for submission");
+        howto.disabled=false;
+    }
+    input=document.getElementsByTagName('input')
+    for(var i =0;i<input.length;i++)
+    {
+        
+        a=input[i].parentNode.childNodes
+        if(input[i].value=="")
+        {
+            if(a.length<=2)
+            {
+               
+                input[i].parentNode.appendChild(err);
+
+            }
+            input[i].focus();
+            return false;
+        }
+        else
+        {
+           if(a.length>2)
+               input[i].parentNode.removeChild(a[2])
+
+        }
+    }
+    textarea=document.getElementsByTagName('textarea')
+    for(var i =0;i<input.length;i++)
+        if(textarea[i].value=="")
+        {
+          textarea[i].parentNode.appendChild(err);
+            return false;
+        }
+}
+
+
+</script>
+
+<body onload='oncemore()'>
+<form action='{{ROOT}}/jobposting/add' method = 'post' onSubmit='return validate()'> 
+{% csrf_token %}
+<table>
+    <tr align='left'>
+        <th width='20%'><label for="id_walk_in">Is this a walk-in?</label></td>
+        <td width='50%' ><input type="checkbox" name="walk_in" id="id_walk_in"  onChange='makeWalkin(this)'></td>
+    </tr>
+    {% for field in form %}
+       <tr align='left'>    
+        <th width='20%'> {{ field.label_tag }} <br/>
+            <span class='help'>{{ field.help_text }}</span>
+            <br/> {{ field.errors }}
+        </th>
+        
+        <td width='50%'> {{ field }}<td>
+<!--        <td width='20%' align='left'> </td> -->
+      </tr>
+   {% endfor %}
+    <tr> 
+        <td colspan='2' align='center'><input type= 'submit' value='Post this job'></td>
+    </tr>
+</table>
+</form>
+</body>
+{% endblock %}

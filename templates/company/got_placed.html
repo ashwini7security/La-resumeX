@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}
+{% if placed == 'yes'%}
+<title> Placed Students</title>
+{% else %}
+<title> Studrnts left to be placed</title>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type = 'text/javascript'>
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+    
+    var value = new Array()
+    var key = new Array()
+
+function set_value(valueS, keyS)
+{
+    i = value.length;
+    value[i]=valueS;
+    key[i] = keyS;
+}
+
+function drawChart( ) 
+{
+        
+        //value = ['Work','Eat','Commute','Watch TV','Sleeep']
+        //key = [11,2,2,2,7];
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Task');
+        data.addColumn('number', 'Hours per Day');
+        data.addRows(5);
+        
+        for (var i =0 ;i<value.length;i++) 
+        {
+            data.setValue(i, 0, value[i]);
+            data.setValue(i, 1, key[i]);
+        }
+     
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 450, height: 300, title: 'Students Placement'});
+      }
+
+</script>
+
+{%endblock%}
+{%block content%}
+ <div id="chart_div"></div>
+{% if placed == 'yes' %}
+    <h3> Placed Students</h3>
+    <!-- <script>alert('fds'); </script> -->
+
+    Total Students Placed = {{ PS|length }}<BR>
+    Total Students = {{count}}<BR>
+    <HR>
+    {% if fil == 'company'%}
+        {% regroup PS by company as filter_list %}
+    {% else %}
+        {% regroup PS by group as filter_list %}
+    {% endif %}
+
+    {% for item in filter_list %}
+        <BR><BR>
+        {{ item.grouper }}<br>
+        <HR>
+        <table>
+        <tr><th> Student name<th> {% if fil == 'company' %} Batch {% else %}Company {% endif %}<th> job type </tr>
+        <script> set_value('{{item.grouper}}',{{item.list|length}})</script>
+
+        {% for p in item.list %}
+           <tr><td> {{ p.other.student.fullname }} <td>{%if fil == 'company' %} {{p.group}} {% else %} {{p.company}} {% endif %}<td>{{ p.other.get_placementType_display }}</tr>
+        {% endfor %}
+        </table>
+    {% endfor %}
+
+{% else %}
+    <h3> Student's Left to be placed </h3>
+    Total Students left  - {{ UPS|length }}<BR>
+    Total Students = {{count}}
+        {% regroup UPS by group as filter_list %}
+
+    {% for item in filter_list %}
+        
+        <BR><HR><BR>
+
+        <h3>{{ item.grouper }}</h3>
+       
+        
+        <script> set_value('{{item.grouper}}',{{item.list|length}})</script>
+        
+        <BR><BR>
+        {% for p in item.list %}
+            <li>{{ p.other }}
+        {% endfor %}
+        </table>
+    {% endfor %}
+{%comment%}
+{% else %}
+
+{% for p in UPS %}
+<li> {{p}}
+{% endfor %}
+{%endcomment%}
+{% endif %}
+<input type = 'button' value='back' onClick='history.go(-1)'>
+{% endblock %}

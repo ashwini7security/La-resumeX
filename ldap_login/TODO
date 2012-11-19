@@ -1,0 +1,4 @@
+* Add groups in the model -done
+* Ask Gune sir as to how to go about the "groups and all" in case of BCA, BBA-IT, etc (Ask Apoorva to clarify this question)
+* Make some real use of the last_login attribute after fixing it's updation.
+    Currently it is updated every time a user LOGINS so rendering it useless, because we don't have the old date at all!

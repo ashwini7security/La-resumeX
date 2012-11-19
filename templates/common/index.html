@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+{% comment %}
+    We will have the special hiya logic here soon ;)
+{% endcomment %}
+<style type = 'text/css'>
+
+#right{
+    float : right;
+    background-image : url('{{MEDIA_URL}}/post-it.png');
+    background-repeat :no-repeat;
+    background-position:top center;
+    width : 10%;
+    margin-right:20%;
+    height:auto;
+    padding:5%;
+    text-align:center;
+
+}
+</style>
+<div>
+<div id = 'right'>
+<B> Job postings</b><BR><BR><BR>
+<input type='button' value = 'Add new Jobposting' onclick="javascript:location.href='{{ROOT}}/jobposting/add';"><BR>
+{% if new_posting %}
+<img src = '{{MEDIA_URL}}/new.gif' height =20 width=20 align = 'left'>
+{% endif %}
+<input type='button' align = 'right' value = 'View Jobpostings' onclick="javascript:location.href='{{ROOT}}/jobposting/views/view';"><BR>
+{% if not p_s_st.0 == 1 %}
+<input type='button' value = 'View HiddenJobpostings' onclick="javascript:location.href='{{ROOT}}/jobposting/view_hidden';"><BR>
+{% endif %}
+</div>
+
+<div style = '{margin:3%;float:left}'>
+Hi...
+<BR><BR>
+{% if create_form %}
+    <input type='button' value = 'start entering your details' onclick='javascript:location.href="{{ ROOT }}/form"'><br>
+    <i> You need to fill your <b>mandatory (marked with *)</b>details !</i><br/>
+{% else %}
+    <input type='button' value = 'edit your details' onclick="javascript:location.href='{{ROOT}}/student_info/{{ prn }}/edit';"><BR>
+    <i>You can now apply to companies! </i> <br/>
+{% if p_s_st.2 == 1 %}
+    <input type='button' value='view the companies' onclick="javascript:location.href='{{ROOT}}/company/list';"><br/><br/>
+{% endif %}
+<input type='button' value = 'view your resume(HTML) BETA version' onclick="javascript:location.href='{{ ROOT }}/generate_resume/{{ prn }}/html';"><br>
+
+<input type='button' value = 'download your resume(PDF) BETA version' onclick="javascript:location.href='{{ ROOT }}/generate_resume/{{ prn }}/pdf';"><br/>
+{% endif %}
+{% if p_s_st.0 == 1 %}
+    <input type='button' value='Admin' onclick="javascript:location.href='{{ROOT}}/PT/admin';"><br/><br/>
+{% endif %}
+<input type='button' onClick="javascript:location.href='{{ROOT}}/ldap_login/logout'" value='Logout!' alt='Enough of form filling!'></span> <br/>
+<input type='hidden' id = 'prn' value='{{prn}}'>
+<BR><BR><BR>
+</div>
+Last login {{last_login }}
+<BR><BR><BR>
+</div>
+{% endblock %}

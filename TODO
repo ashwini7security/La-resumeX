@@ -1,0 +1,34 @@
+<<<-------Release I-------->>>
+
+CHANGES TO DATABASE
+    * length if result awaited to be increased
+    * add validation for emailanf name and all the fields
+
+URGENT:
+    * Add backlogs wali field in form -- inside the photo wala section. - Done by Apoorva
+    * Migrate the database changes according to father's occupation etc...using South or intelligent queries.
+
+==== To be done
+    * HTML preview for the latex - DONE by Samar
+    * Validation - Client and server side for the form and student info - Done  Client
+    * Uploading photograph - DONE by Apoorva.
+    * Extra Field wala thngie. - REMAINS
+    * Changing the latex template acc to abhay sudhakaran -- DONE, Partially
+    * Taking the values from the db for generating the latex - DONE by Apoorva!
+    * Session and Ldap - DONE by Apoorva.
+        
+    * INDIVIDUAL TODOS ARE NOW AVAILABLE IN EACH APP. Refer them.
+
+    * ===========To put a concrete release plan here.===============
+    * Decide a versioning policy...one suggestion is following the way Ubuntu names it's version.
+
+====Progress Till Now.. (6th Jul 2011)
+    - user Form UI
+    - Storing user info into DB
+    - Editing
+    - generating rudimentary Tex file from it
+    - generating PDF copy of the tex File. -- wih bugs
+
+====Bugs
+    - prn not unique wala error - FIXED!
+    - the edit html doesnt print the full name of the user whereas its correctly written in the db - FIXED!

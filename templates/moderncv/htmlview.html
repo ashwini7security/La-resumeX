@@ -1,0 +1,219 @@
+{% load some_tags %}
+<html>
+<head>
+<style type="text/css">
+
+ul {
+	margin-left: 1%;
+}
+table {
+    margin-left: 4%;
+    border:0px;
+}
+pre{
+    font-family:"verdana";
+    margin-left:2%;
+}
+element{
+}
+h3{
+	padding-bottom: 8px;
+	border-bottom-style: double;
+}
+div {
+    border:0px;
+}
+</style>
+</head>
+<div style = "{width: 70%; margin-left:15%; border-style:double; padding:13px}">
+    <div style="{float:left}">
+        <img src="{{MEDIA_URL}}/STORE/photos/{{s.prn}}.png" height='150' width='180'>
+    </div>
+    <div style="{float:'right';position:relative}">
+        <h2> {{ s.fullname }}</h2>
+        <pre>
+            {{ p.get_age }}Yrs,{% if s.sex == 'm' %} Male {% else %} Female {% endif %}
+            <b> Tel(M) </b>: +91-{{s.phone}}
+        </pre>
+    </div>
+<br>
+<div>
+<br>
+    <h3>Career Objective</h3>
+        <b><i>{{s.career_objective}}</b></i>
+</div>
+
+{% if p.strength %}
+<div>
+<br>
+<h3>Personality Traits</h3>
+<ul>
+	{% for per in p.strength|split:',' %} 
+        <li> {{per}}</li>
+     {% endfor %}   
+</div>
+{% endif %}
+
+<div>
+<br>
+{% if m %}
+<h3> Academic Qualifications</h3>
+
+    <table cellpadding=10 >
+      {% for marks in m %}
+          <tr><td>{{marks.course}}<td>{{marks.uni}}<td>
+          {% if marks.markstype == 'GPA' %}
+            {{marks.marks}} GPA out of {{marks.outof}}
+          {% else %}
+            {% if not marks.marks %}
+                {{marks.markstype}}
+            {% else %}
+                {% if marks.markstype == 'Total' %}
+                    {{marks.get_percentage}}
+                {% else %}
+                    {{ marks.markstype}}
+                {% endif %}
+            {% endif %}
+           {% endif %}
+          <td>{{marks.fromDate|date:'Y'}}</tr>
+      {% endfor %}
+    </table>
+</div>
+
+ {% endif %}
+<br>
+{% if c %}
+<div>
+    <h3>Certifications</h3>
+
+        <table cellpadding=10>
+            {% for certi in c %}
+                        <tr><td><li><td>{{ certi.desc }}<td>{{certi.fromDate|date:'M Y'}}
+            {% endfor %}
+</table>
+</div>
+{% endif %}
+
+{% if sw %}
+<div>
+<br>
+    <h3>Software Exposure</h3>
+    <table>
+        {% if sw.programming %}
+            <tr><td><b>Programming Languages</b><td>:<td> {{sw.programming}}
+        {% endif %}
+        {% if sw.databases %}
+            <tr><td><b>Database</b>  <td>           :<td>   {{sw.databases}}
+        {% endif %}
+        {% if sw.OS %}
+            <tr><td><b>Operating systems</b>    <td> :<td>{{sw.OS}}
+        {% endif %}
+        {% if sw.swPackages %}
+            <Tr><td><b>Other software</b>       <tD>:<td>{{sw.swPackages}}
+        {% endif %}
+        {% if sw.webTools %}
+            <tr><td><b>Web based Tools</b>      <td>:<td>{{sw.webTools}}
+        {% endif %}
+    </table>
+</div>
+{% endif %}
+
+{% if p.areasofinterest %}
+<div>
+<br>
+    <h3>Areas of Interest</h3>
+<ul>
+{% for aoi in p.areasofinterest|split:',' %}
+    <li> {{aoi}}</li>
+{% endfor %}
+</div>
+{% endif %}
+
+
+<br>
+{% if pro %}
+  <div>   
+    <h3> Projects Undertaken</h3>
+    <table cellpadding=10>
+        {% for pr in pro %}
+            <tr><td><li><td>{{pr.heading}}</td><td>{{pr.desc}}</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+<br>
+{% if w %}
+<div>
+<h3> Work Experience</h3>
+    <table cellpadding=10>
+    {% for wex in w %}
+        <tr><td><li><td>{{wex.desc}}<td> from {{wex.fromDate|date:'M Y'}} to {{wex.endDate|date:'M Y'}}
+    {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+
+<br>
+{% if a %}
+<div>
+<h3> Academic Achievements</h3>
+    <table cellpadding=10>
+        {% for ac in a %}
+            <tr><td><li><td>{{ac.desc}} in the year {{ac.fromDate|date:'Y'}}</td></tr>
+        {% endfor %}
+     </table>   
+</div>
+{% endif %}
+
+{% if e %}
+<div>
+<h3> Extra Curricular</h3>
+    <table cellpadding=10>
+        {% for ex in e %}
+            <tr><td><li><td>{{ex.desc}} in the year {{ex.fromDate|date:'Y'}}</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+
+
+<div>
+<br>
+<h3>Personal dossier</h3>
+<table>
+<tr><td><b>Mother's Name</b><td>:<td>   {{p.mother_name}}
+<tr><td><b>Father's Name</b>    <td> :<td> {{p.father_name}}
+<tr><td><b>Mother's occupation</b>  <td>           :<td>  {{p.mother_occupation }}
+<Tr><td><b>Father's Occupation</b>       <tD>:<td>{{p.father_occupation}}
+<tr><td><b>Languages Known</b>      <td>:<td>{{p.languages}}
+<tr><td><b>Permanent Adress</b>      <td>:<td><pre>{{p.per_address}}</pre>
+<tr><td><b>Address for correspondence</b>     <td>:<td><pre>{{p.corr_address }}</pre>
+</table>
+</div>
+
+<div>
+<br>
+    <h3>Hobbies</h3>
+<ul>
+{% for h in p.hobbies|split:','%}
+<li>{{h}}
+{% endfor %}
+</div>
+
+
+<br><BR>
+<p>I hereby declare that the above-mentioned information is correct up to my knowledge and I bear the responsibility for the correctness of the above-mentioned particulars. 
+</p><br><br><BR>
+
+<div style = "{float:left;}">
+<br>Date
+</div>
+<div style = "{float:right;}">
+{{s.fullname}}<br>Pune
+</div>
+<br><BR>
+</div>
+<input type = 'button' onclick="javascript:location.href='{{ROOT}}/home'" value='Home'>

@@ -1,0 +1,29 @@
+<html>
+
+<head>
+<title> Students who are interested in Job Posting(s) </title>
+
+</head>
+<body>
+<div id ='sid' ><!--Samar is Dog -->
+    <h1 align="center" style="{color: purple}">LaResume-X</h1> 
+    <h3 align="center">More than just Resume in <img src="http://projects.sdrclabs.in/laresumex_media/nayiwalifile.png" width=50 height=25></h3>
+    <hr size=10 color='#56C72B'>
+</div>
+
+{% for jp,students in jpStudents.items %}
+   <h4>---- {{ jp }} ----</h4>
+   <!-- <a href='/generate_resume/jp/{{jp.id}}/getallResumes'>Get all Resumes (ZIP)</a> -->
+   <ul>
+   {% for u in students %}
+        <li>{{u}} -- <a href='/generate_resume/{{u}}/pisapdf'>Get Resume (PDF)</a></li>
+   {% empty %}
+         <li><i>No Students have yet shown interest in this Job Posting!</i></li> 
+   {% endfor %}
+   </ul>
+{% endfor %}
+
+<input type='button' value='Go back' onclick="history.go(-1);return true;">
+
+</body>
+</html>

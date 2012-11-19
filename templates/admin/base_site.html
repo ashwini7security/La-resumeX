@@ -1,0 +1,22 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'LaResume-X site admin' %}{% endblock %}
+{% comment %} nicked from http://blog.montylounge.com/2009/07/5/customizing-django-admin-branding/ 
+
+{% block extrastyle %}
+<style>
+#header{ background-color: #e2dcc4; border-bottom: solid 3px #999; }
+ 
+#branding h1{ color: #1e0202; }
+ .module h2, .module caption, .inline-group h2 { background:#ccc url(/admin_media/img/admin/nav-bg.gif) bottom left repeat-x; color: #333940; }
+ a.section:link, a.section:visited { color: #666666; }
+ </style>
+{% endblock %}
+{% endcomment %}
+{% block branding %}
+
+<h1 id="site-name">{% trans 'LaResume-X administration' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

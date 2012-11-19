@@ -1,0 +1,8 @@
+phone number is student_info_student is not mandatory ( null = true) and it's now called phone
+
+
+added 3 new fields for company specific:-
+sqlite> alter table student_info_companyspecific add is_mandatory boolean;
+sqlite> alter table student_info_companyspecific add datatype varchar(10) ;
+sqlite> alter table student_info_companyspecific add createdOn datetime;
+

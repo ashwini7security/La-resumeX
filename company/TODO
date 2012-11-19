@@ -1,0 +1,29 @@
+TODO
+
+== BUGS reported by Samar ==
+    If a student ticks a company, it remains unticked even on next load. Experiment with only one company record.
+
+== urgent ==
+    - create a proper form that has the list of comapnies and allows the students to choose whther they wanna apply or not
+    - create a client and server side scripting fr vallidation of three company crieteria and not able to edit the comapny which is gone.
+
+    - take details from ashwini abot the search thing
+    - create the form, validate and test its JS
+    - think of a way thatsthat search is allowed only for the aDMins of the cmpany app.. and not any other student.
+    -think of the generic way to create sql select statements to match all the criteriea.. (since all crieria are bsolutely DIFFERENT and independent) :'(
+    - think of a way to fetch all the resumes, zip it and send it in both PDF and DOC format. 
+
+
+====IDEA behind the company App ====
+    
+    - The app is avaible for the admins to edit - done
+    - the admin view is only way of adding data into the app -done
+    - admin would add the cmapny and the deadline by which students should say they are applying or not. - done
+    - the admin will also fill in the eligibility criteria ( manually in the text area)  for the record - done
+    - a way that when a student clicks on the company and then view the elegibility crieteria and/ or the company url -tooltip
+    - on creation of new company types, there can be a hook or trigger that mails this info to the students
+        -do we need to create MBA, MSC, or year wise groups??? -done
+        - as this wd be used for many years.. 
+    - formulate a way that we can edit what company came for which "group" or students.. i.e. the batch and the course. also, at year closing, this data becomes the property of the group (which all company came for this particular group) so that we dont need to press "control and select" for many years and pne mistake shouldnt ruin it. :)
+    - store email, phone_number etc details of the company for future -done
+    - think about how to backu[ data done for one yea safely. and ready to use for the fresh batch.
